@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot CTF Challenge</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        /* Basic styling for the chat interface */
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f5f5f5; font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        .msger { display: flex; flex-direction: column; width: 100%; max-width: 600px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); height: 100vh; position: relative; }
+        .msger-header { background: #0066ff; padding: 10px; color: #fff; font-size: 18px; position: sticky; top: 0; z-index: 1;}
+        .msger-chat { flex: 1; padding: 10px; overflow-y: auto; height: calc(100vh - 120px);}
+        .msg { display: flex; align-items: flex-end; margin-bottom: 10px; }
+        .msg.right-msg { flex-direction: row-reverse; }
+        .msg-img { width: 30px; height: 30px; border-radius: 50%; background-position: center; background-size: cover; margin: 0 10px; }
+        .msg-bubble { max-width: 75%; padding: 10px; border-radius: 10px; background: #eee; }
+        .msg.right-msg .msg-bubble { background: #d0f0c0; }
+        .msger-inputarea { display: flex; padding: 10px; background: #eee; position: sticky; bottom: 0; z-index; 1; }
+        .msger-input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        .msger-send-btn { background: #0066ff; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <section class="msger">
+        <header class="msger-header">
+            <h1>F@k3 Ch@tb0t</h1>
+        </header>
+        <main class="msger-chat" id="msger-chat"></main>
+        <form class="msger-inputarea">
+            <input type="text" class="msger-input" placeholder="Enter your message..." required>
+            <button type="submit" class="msger-send-btn">Send</button>
+        </form>
+    </section>
+
+    <script>
+        const msgerForm = document.querySelector(".msger-inputarea");
+        const msgerInput = document.querySelector(".msger-input");
+        const msgerChat = document.querySelector(".msger-chat");
+
+        const PERSON_IMG = "/static/images/png-clipart-profile-logo-computer-icons-user-user-blue-heroes-thumbnail.png";
+        const BOT_IMG = "/static/images/png-transparent-black-robot-face-illustration-robotics-technology-computer-icons-internet-bot-robotics-humanoid-robot-industrial-robot-area-thumbnail.png";
+        const BOT_NAME = "ChatBot";
+        const PERSON_NAME = "You";
+
+        msgerForm.addEventListener("submit", event => {
+            event.preventDefault();
+            const msgText = msgerInput.value;
+            if (!msgText) return;
+            appendMessage(PERSON_NAME, PERSON_IMG, "right", msgText);
+            msgerInput.value = "";
+            botResponse(msgText);
+        });
+
+        function appendMessage(name, img, side, text) {
+            const msgHTML = `
+                <div class="msg ${side}-msg">
+                    <div class="msg-img" style="background-image: url(${img})"></div>
+                    <div class="msg-bubble">
+                        <div class="msg-info">
+                            <div class="msg-info-name" style="font-weight: bold; padding-bottom: 8px;" >${name}</div>
+                            <div class="msg-info-time" style="font-size: small; padding-bottom: 8px" >${formatDate(new Date())}</div>
+                        </div>
+                        <div class="msg-text">${text}</div>
+                    </div>
+                </div>`;
+            msgerChat.insertAdjacentHTML("beforeend", msgHTML);
+            msgerChat.scrollTop += 500;
+        }
+
+	window.onload = function() {
+		appendMessage(BOT_NAME, BOT_IMG, "left","Hi, I'm Chatbot, my task is to guard the flag. Good luck finding it!.....You'll never find. HAHAHAAHAH")
+	}
+
+        function botResponse(rawText) {
+            fetch(`/get?msg=${encodeURIComponent(rawText)}`)
+                .then(response => response.json())
+                .then(data => {
+          		appendMessage(BOT_NAME, BOT_IMG, "left", data);
+        	});
+        }
+
+        function formatDate(date) {
+            const h = "0" + date.getHours();
+            const m = "0" + date.getMinutes();
+            return `${h.slice(-2)}:${m.slice(-2)}`;
+        }
+    </script>
+</body>
+</html>
+
