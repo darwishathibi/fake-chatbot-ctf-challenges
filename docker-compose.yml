@@ -1,0 +1,9 @@
+services:
+  chatbot:
+    build: .
+    ports:
+      - "5487:5487"
+    environment:
+      - FLASK_ENV=production
+      - FLAG=ICECTF{f@k3_ch@tb0T_but_d0nt_f@k3_y0urs3lf}
+    container_name: chatbot_web
