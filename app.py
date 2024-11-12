@@ -18,10 +18,10 @@ def get_bot_response():
         response = "Whoa... you're so clever! But are you really ready for the flag? Well, here it is... ICECTF{f@k3_ch@tb0T_but_d0nt_f@k3_y0urs3lf}"
     # If there are fewer than 5 words but it contains the word "secret"
     elif len(words) < 5 and "secret" in words:
-        response = "Ah, I see you're trying to uncover something... but just a few more words and you'll get it!"
+        response = "Ah, I see you're trying to uncover something... but I don't understand what you want to say. Can you explain it more?"
     # If the sentence has more than 5 words but no "secret"
-    elif len(words) > 5:
-        response = "Hmm... you've got a lot to say, but I don't see any secrets in there. Keep trying!"
+    elif len(words) > 5 and "secret" not in words:
+        response = "Hmm... you've got a lot to say, but I don't see secret in there. Keep trying!"
     else:
         response = "HAAHAHAHAAHHA LOL try again... it's not that easy!"
 
